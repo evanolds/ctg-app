@@ -63,24 +63,26 @@ class CTGProblem:
             # If successfully parsed as a float, compared against expected
             user_correct = self.float_answer_equals(user_float)
         
-        # Provided one of the cases above is not encountered, the user 
-        # always receives the same explanation, minus the minor difference 
-        # of the correct vs. incorrect badge.
-        parts = []
-        if user_correct:
-            parts.append({
-                "type": "badge",
-                "value": "Correct"
-            })
-        else:
-            parts.append({
+        # Project specification states to display "an encouragement or prompt to try 
+        # again if the answer is incorrect." Wireframes in the specification document 
+        # show the UI showing the correct answer when the answer is wrong. So when the 
+        # answer is wrong, the correct answer plus "Please try again" are shown.
+        if not user_correct:
+            return [{
                 "type": "badge",
                 "value": "Incorrect"
-            })
-            parts.append({
+            },
+            {
                 "type": "text",
-                "value": f"The correct limit is {answer}."
-            })
+                "value": f"The correct limit is {answer}. Please try again."
+            }]
+        
+        # A full explanation is included for correct answers
+        parts = []
+        parts.append({
+            "type": "badge",
+            "value": "Correct"
+        })
         
         # Build explanation
         message = ("The expression inside the square root evaluates " +
